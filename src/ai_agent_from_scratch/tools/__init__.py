@@ -9,6 +9,7 @@ from .file_tools import (
     read_file,
     search_files,
     write_file,
+    modify_file,
 )
 from .shell_tools import run_command
 
@@ -25,4 +26,5 @@ TOOLS = {
     "get_file_info": get_file_info,
     "get_current_directory": get_current_directory,
     "list_directory_tree": list_directory_tree,
+    "modify_file": modify_file,
 }

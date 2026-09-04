@@ -1,5 +1,6 @@
 import os
 import shutil
+import difflib
 from pathlib import Path
 from datetime import datetime
 
@@ -123,3 +124,45 @@ def list_directory_tree(path="."):
 
     return "\n".join(lines) or "(empty directory)"
 
+def modify_file(path, old_text, new_text):
+    file_path = Path(path)
+
+    if not file_path.is_file():
+        raise FileNotFoundError(f"File not found: {path}")
+
+    current_text = file_path.read_text(encoding="utf-8")
+
+    occurrences = current_text.count(old_text)
+
+    if occurrences == 0:
+        raise ValueError("The old text was not found in the file.")
+
+    if occurrences > 1:
+        raise ValueError(
+            f"The old text appears {occurrences} times. "
+            "Provide a more spacific section"
+        )
+
+    updated_text = current_text.replace(old_text, new_text, 1)
+
+    diff = "\n".join(
+        difflib.unified_diff(
+            current_text.splitlines(),
+            updated_text.splitlines(),
+            fromfile=path,
+            tofile=path,
+            lineterm=""
+        )
+    )
+
+    print("\n Proposed patch:\n")
+    print(diff)
+
+    answer = input("\n Apply this patch? [Y/N]: ")
+
+    if answer.strip().lower() != "y":
+        return "User declined to apply the patch."
+
+    file_path.write_text(updated_text, encoding="utf-8")
+
+    return f"Applied tarheted modification to {path}"

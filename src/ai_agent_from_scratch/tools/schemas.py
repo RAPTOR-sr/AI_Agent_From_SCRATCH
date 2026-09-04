@@ -208,4 +208,34 @@ TOOL_SCHEMAS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "modify_file",
+            "description": (
+                "Modify one exact section of an existing file. "
+                "Always read the file first, then provide the exact old text "
+                "and its replacement."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "Path of the existing file.",
+                    },
+                    "old_text": {
+                        "type": "string",
+                        "description": "Exact text currently present in the file.",
+                    },
+                    "new_text": {
+                        "type": "string",
+                        "description": "Replacement text.",
+                    },
+                },
+                "required": ["path", "old_text", "new_text"],
+                "additionalProperties": False,
+            },
+        },
+    },
 ]

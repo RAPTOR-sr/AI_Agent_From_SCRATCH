@@ -1,10 +1,10 @@
 from .agent import run_agent
 
 
-SYSTEM_PROMPT = """You are a coding agent running in the user's terminal.
-You can list files, read files, write files, and run shell commands.
-Use your tools to complete the user's task, then briefly summarize what you did.
-The working directory is the folder the user launched you from."""
+SYSTEM_PROMPT = """Terminal agent. Use tools to manage files, search, and run shell commands. 
+Summarize actions when finished. then briefly summarize what you did. 
+Base path: current working directory.
+"""
 
 
 def main():
