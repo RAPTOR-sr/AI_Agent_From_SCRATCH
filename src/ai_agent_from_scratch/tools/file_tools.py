@@ -125,6 +125,7 @@ def list_directory_tree(path="."):
     return "\n".join(lines) or "(empty directory)"
 
 def modify_file(path, old_text, new_text):
+    """Replace one exact section of a file after user confirmation."""
     file_path = Path(path)
 
     if not file_path.is_file():
@@ -166,3 +167,35 @@ def modify_file(path, old_text, new_text):
     file_path.write_text(updated_text, encoding="utf-8")
 
     return f"Applied tarheted modification to {path}"
+
+def search_code(query, path="."):
+    """Search source files recursively for a text query."""
+    if not query.strip():
+        raise ValueError("Query cannot be empty.")
+
+    ignored_directories = {
+        ".git",
+        ".venv",
+        "__pycache__",
+        "node_modules",
+    }
+
+    matches = []
+
+    for file_path in Path(path).rglob("*"):
+        if not file_path.is_file():
+            continue
+
+        if any(directory in ignored_directories for directory in file_path.parts):
+            continue
+
+        try:
+            lines = file_path.read_text(encoding="utf-8").splitlines()
+        except (UnicodeDecodeError, OSError):
+            continue
+
+        for line_number, line in enumerate(lines, start=1):
+            if query in line:
+                matches.append(f"{file_path}:{line_number}: {line.strip()}")
+
+    return "\n".join(matches) or "No code matches found."

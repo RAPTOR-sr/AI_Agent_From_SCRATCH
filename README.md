@@ -2,20 +2,23 @@
 
 A lightweight, terminal-based autonomous AI coding agent built from scratch in Python, powered by Groq's fast LLM inference (`openai/gpt-oss-120b`).
 
-The agent operates in an interactive conversational loop, leverages OpenAI-compatible function calling, and safely executes filesystem actions and shell commands to assist with coding, debugging, and file management tasks.
+The agent operates in an interactive conversational loop, leverages OpenAI-compatible function calling, and safely executes filesystem actions, targeted code edits, and shell commands to assist with coding, debugging, refactoring, and file management tasks.
 
 ---
 
 ## 🚀 Features
 
 - **Interactive CLI Interface**: Chat directly with the agent in a clean terminal REPL.
-- **Autonomous Tool-Calling Loop**: Uses tool schemas to iteratively plan, call tools, inspect outputs, and return a final response.
-- **Human-in-the-Loop Safety**: Prompts for explicit user confirmation before executing potentially destructive actions (running shell commands, deleting files).
-- **Comprehensive Filesystem & Shell Toolkit**:
-  - 📁 **Exploration**: List files, inspect directory trees, view working directory, and check file metadata.
-  - 🔍 **Search**: Find files recursively by filename and/or content.
-  - ✏️ **File Operations**: Read, write, move, rename, and delete files, as well as create directories.
-  - 💻 **Shell Execution**: Run arbitrary terminal commands with built-in timeout safeguards.
+- **Autonomous Tool-Calling Loop**: Uses tool schemas to iteratively plan, invoke tools, inspect outputs, and return a final response.
+- **Human-in-the-Loop Safety Controls**:
+  - Prompts for confirmation before executing shell commands (`[Y/N]`).
+  - Prompts for confirmation before deleting files (`[Y/N]`).
+  - Displays a unified diff patch preview and asks for confirmation before applying targeted code modifications (`[Y/N]`).
+- **Comprehensive 13-Tool Suite**:
+  - 📁 **Filesystem Exploration**: List files, inspect directory trees, view working directory, and check file metadata.
+  - 🔍 **Search & Code Navigation**: Search files by name/content and search source code across files with line numbers (automatically ignores `.git`, `.venv`, `__pycache__`, `node_modules`).
+  - ✏️ **File Manipulation & Targeted Editing**: Read, write, move, rename, delete files, create directories, and perform targeted patch replacements (`modify_file`).
+  - 💻 **Shell Execution**: Run arbitrary terminal commands with built-in timeout safeguards (120s).
 
 ---
 
@@ -28,12 +31,14 @@ AI_Agent_From_SCRATCH/
 │       ├── __init__.py
 │       ├── agent.py          # Agent loop & tool execution logic
 │       ├── config.py         # Environment variables & Groq client setup
-│       ├── main.py           # CLI entrypoint and interactive REPL
+│       ├── main.py           # CLI entrypoint, system prompt, and interactive REPL
 │       └── tools/
 │           ├── __init__.py   # Tool registry mapping
-│           ├── file_tools.py # File manipulation & search utilities
+│           ├── file_tools.py # File manipulation, diff patching, & search utilities
 │           ├── schemas.py    # OpenAI-compatible function calling schemas
 │           └── shell_tools.py# Shell execution with user confirmation
+├── test_agent/               # Test scripts and example projects
+│   └── example.py
 ├── main.py                   # Root entry point
 ├── pyproject.toml            # Project configuration & dependencies
 └── README.md                 # Project documentation
@@ -106,18 +111,25 @@ python main.py
 ```text
 Mini agent ready. Type 'exit' to quit.
 
-You: Can you list all files in the current directory and check what python packages we depend on?
-Agent: I have checked your directory and inspected pyproject.toml. The project depends on:
-- groq (>=1.7.0)
-- python-dotenv (>=1.2.3)
+You: Can you check for any division by zero handling in test_agent/example.py?
+Agent: Let me search the code in test_agent/example.py.
+[Agent calls search_code]
+Found division check at test_agent/example.py:21: if b == 0: raise ZeroDivisionError("Cannot divide by zero")
 
-You: Delete the obsolete file temp.log
-Delete 'temp.log'? [Y/N]: Y
-Agent: Deleted file: temp.log
+You: Replace that error message with 'Division by zero is not allowed'
+Agent: [Agent reads file and prepares patch]
 
-You: Run pytest on this repository
-Run 'pytest'? [Y/N]: Y
-Agent: pytest command executed. 0 passed in 0.05s.
+ Proposed patch:
+--- test_agent/example.py
++++ test_agent/example.py
+@@ -21,3 +21,3 @@
+     if b == 0:
+-        raise ZeroDivisionError("Cannot divide by zero")
++        raise ZeroDivisionError("Division by zero is not allowed")
+     return a / b
+
+ Apply this patch? [Y/N]: Y
+Agent: Applied targeted modification to test_agent/example.py.
 
 You: exit
 ```
@@ -134,14 +146,16 @@ You: exit
 | `get_file_info` | `path` | No | Returns metadata (type, size in bytes, and last modified ISO timestamp). |
 | `read_file` | `path` | No | Reads and returns UTF-8 text content from a file. |
 | `write_file` | `path`, `content` | No | Creates or overwrites a file with UTF-8 content. |
+| `modify_file` | `path`, `old_text`, `new_text` | **Yes `[Y/N]`** | Replaces an exact section in a file, displaying a unified diff preview before applying. |
 | `create_directory` | `path` | No | Creates a directory and any missing parent directories. |
 | `move_file` | `source`, `destination` | No | Moves or renames a file (prevents accidental destination overwrite). |
-| `search_files` | `path`, `name`, `content` | No | Recursively searches files matching filename substring and/or text content. |
 | `delete_file` | `path` | **Yes `[Y/N]`** | Safely deletes a file after prompting the user for confirmation. |
-| `run_command` | `command` | **Yes `[Y/N]`** | Prompts user `[Y/N]` and executes shell command (120s timeout). |
+| `search_files` | `path`, `name`, `content` | No | Recursively searches files matching filename substring and/or text content. |
+| `search_code` | `query`, `path` *(optional)* | No | Recursively searches source code for matching text, ignoring noise folders (`.venv`, `.git`, etc.) and returning line numbers. |
+| `run_command` | `command` | **Yes `[Y/N]`** | Prompts user `[Y/N]` and executes shell command with a 120s timeout. |
 
 ---
 
 ## 📄 License
 
-This project is open source and available under the standard project license.
+This project is open source and available under the standard MIT or project license.

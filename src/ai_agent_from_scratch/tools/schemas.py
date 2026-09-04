@@ -238,4 +238,29 @@ TOOL_SCHEMAS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_code",
+            "description": (
+                "Search source code recursively for a text query. "
+                "Returns matching file paths, line numbers, and code lines."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Text to search for in source files.",
+                    },
+                    "path": {
+                        "type": "string",
+                        "description": "Directory to search. Defaults to the current directory.",
+                    },
+                },
+                "required": ["query"],
+                "additionalProperties": False,
+            },
+        },
+    },
 ]
