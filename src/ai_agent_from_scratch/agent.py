@@ -1,6 +1,6 @@
 import json
 
-from .config import client, MODEL
+from .llm import get_llm
 from .tools import TOOLS
 from .tools.schemas import TOOL_SCHEMAS
 
@@ -9,9 +9,12 @@ def run_tool(tool_call):
     """Execute a tool requested by the model."""
 
     name = tool_call.function.name
-    args = json.loads(tool_call.function.arguments)
-
-    #print(f"Tool: {name} ({args})")
+    args = tool_call.function.arguments
+    if isinstance(args, str):
+        try:
+            args = json.loads(args)
+        except Exception:
+            args = {}
 
     try:
         return str(TOOLS[name](**args))
@@ -19,12 +22,15 @@ def run_tool(tool_call):
         return f"Error: {error}"
 
 
-def run_agent(messages):
+def run_agent(messages, llm=None, max_iterations=15):
     """Run the agent loop until the model returns a final response."""
+    if llm is None:
+        llm = get_llm()
 
-    while True:
-        response = client.chat.completions.create(
-            model=MODEL,
+    iterations = 0
+    while iterations < max_iterations:
+        iterations += 1
+        response = llm.generate(
             messages=messages,
             tools=TOOL_SCHEMAS,
         )
@@ -34,7 +40,7 @@ def run_agent(messages):
 
         # Model has finished and doesn't need a tool.
         if not message.tool_calls:
-            return message.content
+            return message.content or ""
 
         # Execute every tool requested by the model.
         for tool_call in message.tool_calls:
@@ -44,6 +50,9 @@ def run_agent(messages):
                 {
                     "role": "tool",
                     "tool_call_id": tool_call.id,
+                    "name": tool_call.function.name,
                     "content": result,
                 }
             )
+
+    return "Agent reached maximum tool execution iterations for this request."

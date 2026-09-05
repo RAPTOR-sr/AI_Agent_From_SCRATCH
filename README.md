@@ -1,13 +1,14 @@
 # AI Agent From Scratch
 
-A lightweight, terminal-based autonomous AI coding agent built from scratch in Python, powered by Groq's fast LLM inference (`openai/gpt-oss-120b`).
+A lightweight, terminal-based autonomous AI coding agent built from scratch in Python, supporting multiple LLM backends: **Groq** (`openai/gpt-oss-120b`) and **Google Gemini** (`gemini-3.5-flash` / `gemini-3.6-flash`).
 
-The agent operates in an interactive conversational loop, leverages OpenAI-compatible function calling, and safely executes filesystem actions, targeted code edits, and shell commands to assist with coding, debugging, refactoring, and file management tasks.
+The agent operates in an interactive conversational loop, leverages tool / function calling, and safely executes filesystem actions, targeted code edits, and shell commands to assist with coding, debugging, refactoring, and file management tasks.
 
 ---
 
 ## 🚀 Features
 
+- **Multi-Provider LLM Support**: Easily switch between **Groq** and **Google Gemini** (using official `google-genai` SDK) via configuration.
 - **Interactive CLI Interface**: Chat directly with the agent in a clean terminal REPL.
 - **Autonomous Tool-Calling Loop**: Uses tool schemas to iteratively plan, invoke tools, inspect outputs, and return a final response.
 - **Human-in-the-Loop Safety Controls**:
@@ -29,13 +30,18 @@ AI_Agent_From_SCRATCH/
 ├── src/
 │   └── ai_agent_from_scratch/
 │       ├── __init__.py
-│       ├── agent.py          # Agent loop & tool execution logic
-│       ├── config.py         # Environment variables & Groq client setup
+│       ├── agent.py          # Provider-agnostic agent loop & tool execution
+│       ├── config.py         # Multi-provider configuration & environment setup
+│       ├── llm/              # Pluggable LLM provider implementations
+│       │   ├── __init__.py   # LLM factory (get_llm)
+│       │   ├── base.py       # Abstract base class for LLMs
+│       │   ├── gemini.py     # Google Gemini implementation with function calling
+│       │   └── groq.py       # Groq implementation with function calling
 │       ├── main.py           # CLI entrypoint, system prompt, and interactive REPL
 │       └── tools/
 │           ├── __init__.py   # Tool registry mapping
 │           ├── file_tools.py # File manipulation, diff patching, & search utilities
-│           ├── schemas.py    # OpenAI-compatible function calling schemas
+│           ├── schemas.py    # Function calling schemas
 │           └── shell_tools.py# Shell execution with user confirmation
 ├── test_agent/               # Test scripts and example projects
 │   └── example.py
@@ -66,6 +72,7 @@ AI_Agent_From_SCRATCH/
    Create a `.env` file in the root directory:
    ```env
    GROQ_API_KEY=your_groq_api_key_here
+   GEMINI_API_KEY=your_groq_api_key_here
    ```
 
 3. **Install Dependencies**:
@@ -109,7 +116,19 @@ python main.py
 ### Example Session
 
 ```text
+=============================================
+ Select LLM Provider:
+ [1] Groq (openai/gpt-oss-120b)
+ [2] Gemini (gemini-3.5-flash)
+=============================================
+Enter choice [1/2] (default: 1): 1
+
+Loaded provider: GROQ (openai/gpt-oss-120b)
 Mini agent ready. Type 'exit' to quit.
+
+You: Can you run dir in the terminal?
+Run 'dir'? [Y/N]: N
+Agent: I understand you chose not to run 'dir'. How else can I help you?
 
 You: Can you check for any division by zero handling in test_agent/example.py?
 Agent: Let me search the code in test_agent/example.py.

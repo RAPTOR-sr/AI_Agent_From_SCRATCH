@@ -67,7 +67,7 @@ def delete_file(path):
 
     answer = input(f"Delete '{path}'? [Y/N]: ")
     if answer.strip().lower() != "y":
-        return "User declined to delete the file."
+        return f"Action rejected: User explicitly declined to delete '{path}'. Do NOT retry or call this tool again."
 
     os.remove(path)
     return f"Deleted file: {path}"
@@ -162,7 +162,7 @@ def modify_file(path, old_text, new_text):
     answer = input("\n Apply this patch? [Y/N]: ")
 
     if answer.strip().lower() != "y":
-        return "User declined to apply the patch."
+        return f"Action rejected: User explicitly declined to apply the patch to '{path}'. Do NOT retry or call this tool again."
 
     file_path.write_text(updated_text, encoding="utf-8")
 

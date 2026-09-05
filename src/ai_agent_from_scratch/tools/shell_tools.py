@@ -16,7 +16,7 @@ def run_command(command):
     answer = input(f"Run '{command}'? [Y/N]: ")
 
     if answer.strip().lower() != "y":
-        return "User declined to run the command."
+        return "Action rejected: User explicitly declined to run this command. Do NOT retry or call this command again."
 
     result = subprocess.run(
         command,
