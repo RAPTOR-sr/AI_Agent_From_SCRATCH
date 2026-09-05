@@ -3,17 +3,10 @@ from .config import GROQ_MODEL, GEMINI_MODEL
 from .llm import get_llm
 
 
-SYSTEM_PROMPT = """You are a coding agent running in the user's terminal.
-You have tools to:
-- Explore the filesystem: list files, view directory trees, get file metadata (size, type, modified time), and check the current working directory.
-- Search & navigate: search files by name/content and search source code (`search_code`) with line numbers.
-- Manage & edit files: read files, write files, modify specific sections of files with diffs (`modify_file`), create directories, move/rename files, and delete files.
-- Execute shell commands: run terminal commands when needed.
+SYSTEM_PROMPT = """You are Terminal agent. Use tools to manage files, search, and run shell commands. Summarize actions when finished. Base path: current working directory.
 
 Important Rules:
-- If a tool output indicates that the user declined or rejected an action (e.g. user declined a shell command, file deletion, or code modification), you MUST IMMEDIATELY STOP attempting that action. Never re-prompt, retry, or call the tool again with variations of the same command. Acknowledge that the action was cancelled and ask the user how they would like to proceed.
-- Use your tools to complete the user's task, then briefly summarize what you did.
-- The working directory is the folder the user launched you from."""
+user declined or rejected an action then IMMEDIATELY STOP attempting that action"""
 
 
 def choose_provider() -> str:
