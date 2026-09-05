@@ -30,24 +30,24 @@ AI_Agent_From_SCRATCH/
 ├── src/
 │   └── ai_agent_from_scratch/
 │       ├── __init__.py
-│       ├── agent.py          # Provider-agnostic agent loop & tool execution
-│       ├── config.py         # Multi-provider configuration & environment setup
-│       ├── llm/              # Pluggable LLM provider implementations
-│       │   ├── __init__.py   # LLM factory (get_llm)
-│       │   ├── base.py       # Abstract base class for LLMs
-│       │   ├── gemini.py     # Google Gemini implementation with function calling
-│       │   └── groq.py       # Groq implementation with function calling
-│       ├── main.py           # CLI entrypoint, system prompt, and interactive REPL
+│       ├── agent.py           # Provider-agnostic agent loop & tool execution
+│       ├── config.py          # Multi-provider configuration & environment setup
+│       ├── llm/               # Pluggable LLM provider implementations
+│       │   ├── __init__.py    # LLM factory (get_llm)
+│       │   ├── base.py        # Abstract base class for LLMs
+│       │   ├── gemini.py      # Google Gemini implementation with function calling
+│       │   └── groq.py        # Groq implementation with function calling
+│       ├── main.py            # CLI entrypoint, system prompt, and interactive REPL
 │       └── tools/
-│           ├── __init__.py   # Tool registry mapping
-│           ├── file_tools.py # File manipulation, diff patching, & search utilities
-│           ├── schemas.py    # Function calling schemas
-│           └── shell_tools.py# Shell execution with user confirmation
-├── test_agent/               # Test scripts and example projects
+│           ├── __init__.py    # Tool registry mapping
+│           ├── file_tools.py  # File manipulation, diff patching, & search utilities
+│           ├── schemas.py     # Function calling schemas
+│           └── shell_tools.py # Shell execution with user confirmation
+├── test_agent/                # Test scripts and example projects
 │   └── example.py
-├── main.py                   # Root entry point
-├── pyproject.toml            # Project configuration & dependencies
-└── README.md                 # Project documentation
+├── main.py                    # Root entry point
+├── pyproject.toml             # Project configuration & dependencies
+└── README.md                  # Project documentation
 ```
 
 ---
