@@ -1,7 +1,7 @@
 [project]
 name = "ai-agent-from-scratch"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Python terminal-based AI coding agent supporting Groq and Google Gemini. It uses tool calling to search, read, modify, and manage files, execute shell commands, and assist with coding tasks through human-confirmed actions."
 readme = "README.md"
 authors = [
     { name = "Shivansh", email = "" }
