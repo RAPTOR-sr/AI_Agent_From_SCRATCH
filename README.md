@@ -64,7 +64,7 @@ AI_Agent_From_SCRATCH/
 
 1. **Clone the Repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/RAPTOR-sr/AI_Agent_From_SCRATCH
    cd AI_Agent_From_SCRATCH
    ```
 
