@@ -1,6 +1,6 @@
 # AI Agent From Scratch
 
-A lightweight, terminal-based autonomous AI coding agent built from scratch in Python, supporting multiple LLM backends: **Groq** (`openai/gpt-oss-120b`) and **Google Gemini** (`gemini-3.5-flash` / `gemini-3.6-flash`).
+A lightweight, terminal-based autonomous AI coding agent built from scratch in Python, supporting multiple LLM backends: **Groq** (`openai/gpt-oss-120b`) and **Google Gemini** (`gemini-3.6-flash`).
 
 The agent operates in an interactive conversational loop, leverages tool / function calling, and safely executes filesystem actions, targeted code edits, and shell commands to assist with coding, debugging, refactoring, and file management tasks.
 
